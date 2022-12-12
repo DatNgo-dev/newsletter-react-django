@@ -135,7 +135,12 @@ REST_FRAMEWORK = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "http://127.0.0.1:5173",
 ]
+
+ACTIVE_CAMPAIGN_URL = "https://protonmail63806.api-us1.com"
+
+ACTIVE_CAMPAIGN_KEY = '08f66ff92f05d93713f31e04faaaf308c6de63a122c789b3c9abee2993e6e1267b4ce241'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import React, { useState } from "react";
+import axios from "axios";
+import { Oval } from "react-loader-spinner";
 
 const SignUpPage = () => {
+  const [loading, setLoading] = useState(false);
   const [agree, setAgree] = useState(false);
-
   const [formData, setFormData] = useState({
     first_name: "",
     email: "",
@@ -11,19 +13,54 @@ const SignUpPage = () => {
 
   const { first_name, email } = formData;
 
-  const onChange = (e) =>
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const onChecked = (e) => setAgree(e.target.checked);
+  const onChecked = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setAgree(e.target.checked);
 
-  const onSubmit = (e) => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const config = {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      }
+    };
+
+    const body = JSON.stringify({
+      email,
+      first_name,
+      agree
+    });
+
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        await axios.post(
+          "http://127.0.0.1:8000/api/email-signup/newsletter-signup", 
+          body, 
+          config
+          );
+      } catch (err) {
+
+      }
+      setLoading(false);
+    };
+
+    fetchData();
   };
 
   return (
     <div className="w-full grid place-content-center">
-      <h1 className="mb-5 text-md md:text-xl lg:text-3xl 2xl:text-4xl font-bold">Sign up to our free subscription for staying in the know!</h1>
-      <form className="w-full" onSubmit={(e) => onSubmit(e)}>
+      <h1 className="mb-5 text-md md:text-xl lg:text-3xl 2xl:text-4xl font-bold">
+        Sign up to our free subscription for staying in the know!
+      </h1>
+      <form
+        className="flex flex-col items-center"
+        onSubmit={(e) => onSubmit(e)}
+      >
         <div className="relative z-0 mb-6 w-full group">
           <input
             type="text"
@@ -72,9 +109,29 @@ const SignUpPage = () => {
           </label>
         </div>
 
-        <button className="button">Subscribe</button>
+        {loading ? (
+          <div className="flex justify-center self-center">
+            <Oval
+              height={80}
+              width={80}
+              color="#4fa94d"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+              ariaLabel="oval-loading"
+              secondaryColor="#4fa94d"
+              strokeWidth={2}
+              strokeWidthSecondary={2}
+            />
+          </div>
+        ) : (
+          <button className="button">Subscribe</button>
+        )}
+
+        <Link to="/" className="btn-red">
+          Return
+        </Link>
       </form>
-      <Link to="/" className="btn-red">Return</Link>
     </div>
   );
 };
